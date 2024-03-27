@@ -32,5 +32,9 @@ class Message(models.Model):
     updated = models.DateTimeField(auto_now=True) # takes a snapshot everytime its saved
     created = models.DateTimeField(auto_now_add=True) # only once
 
+    class Meta:
+        ordering = ['-updated', '-created']
+
     def __str__(self):
         return str(self.body)[:50]
+    
