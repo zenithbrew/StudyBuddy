@@ -9,3 +9,4 @@ pytz
 sqlparse
 toml
 python-dotenv==1.0.1
+gunicorn==21.2.0
