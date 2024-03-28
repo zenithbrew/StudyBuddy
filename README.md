@@ -8,7 +8,7 @@
 
 --> Clone the repository using the command below :
 ```bash
-git clone https://github.com/divanov11/StudyBud.git
+git clone https://github.com/AyushModi123/StudyBud.git
 
 ```
 
@@ -64,7 +64,7 @@ python manage.py runserver
 <p align="center">
   Feed Home
 </p>
-<img src="https://user-images.githubusercontent.com/72341453/134747262-0a92233d-8010-40f8-84c5-8d94895aac44.PNG">
+<img src="https://github.com/AyushModi123/StudyBud/assets/99743679/6de00a06-e9e5-48cd-88d7-5b8e27461490">
 </td> 
 <td width="50%">
 <br>
