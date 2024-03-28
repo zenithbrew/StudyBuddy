@@ -42,6 +42,23 @@ pip install -r requirements.txt
 
 #
 
+### Using Docker
+--> Pull the docker image
+```bash
+docker pull ayushmodi/studybud:latest
+```
+
+--> Build the image
+```bash
+docker build --build-arg GIT_REPO_URL=https://github.com/AyushModi123/StudyBud.git --build-arg GIT_BRANCH=main -t my_django_app . 
+```
+
+--> Run the container
+```bash
+docker run -p 8000:8000 my_django_app
+```
+#
+
 ### Running the App
 
 --> To run the App, we use :
