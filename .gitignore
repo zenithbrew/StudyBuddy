@@ -129,6 +129,7 @@ ENV/
 env.bak/
 venv.bak/
 .vagrant
+Vagrant*
 
 # Spyder project settings
 .spyderproject
