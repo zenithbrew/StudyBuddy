@@ -13,7 +13,20 @@ from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.urls import reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.messages.views import SuccessMessageMixin
 from .utils import active_required, account_activation_token
+
+class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+    template_name = 'base/password_reset.html'
+    email_template_name = 'base/password_reset_email.html'
+    subject_template_name = 'base/password_reset_subject.html'
+    success_message = "We've emailed you instructions for setting your password, " \
+                      "if an account exists with the email you entered. You should receive them shortly." \
+                      " If you don't receive an email, " \
+                      "please make sure you've entered the address you registered with, and check your spam folder."
+    success_url = reverse_lazy('home')
 
 
 def activate_account(request, uidb64, token):
