@@ -22,11 +22,14 @@
         {% endfor %}
     </ul>
     {% endif %}
+    {% if request.user.is_authenticated and not request.user.is_active %}
+        <p>Your account is inactive. Please contact an administrator to activate your account.</p>    
+    {% else %}
+        {% block content %}
 
-    {% block content %}
 
-
-    {% endblock %}
+        {% endblock %}
+    {% endif %}
 
     <script src="{% static 'js/script.js' %}"></script>
 </body>

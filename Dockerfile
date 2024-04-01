@@ -15,6 +15,8 @@ RUN git clone --branch $GIT_BRANCH $GIT_REPO_URL .
 RUN pip install --no-cache-dir -r ./requirements.txt
 
 ENV SECRET_KEY='3#av2c6nptlbbb6^muqkch37rtuef83@+g$v!ir-f5%doocb43q@#$@$dsf#!3Daf1313Djhkk###'
+ENV EMAIL_HOST_USER='email_here'
+ENV EMAIL_HOST_PASSWORD='password_here'
 # Expose the port on which the Django app will run
 EXPOSE 8000
 

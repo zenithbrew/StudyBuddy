@@ -4,17 +4,31 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
+from django.conf import settings
+from django.core.mail import send_mail
 from .models import Room, Topic, Message, User
 from .forms import RoomForm, UserForm, MyUserCreationForm
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .utils import active_required, account_activation_token
 
-# Create your views here.
 
-# rooms = [
-#     {'id': 1, 'name': 'Lets learn python!'},
-#     {'id': 2, 'name': 'Design with me'},
-#     {'id': 3, 'name': 'Frontend developers'},
-# ]
-
+def activate_account(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('home')
+    else:
+        return render(request, '<div>Invalid Activation</div>')
 
 def loginPage(request):
     page = 'login'
@@ -41,7 +55,7 @@ def loginPage(request):
     context = {'page': page}
     return render(request, 'base/login_register.html', context)
 
-
+@login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     return redirect('home')
@@ -53,11 +67,24 @@ def registerPage(request):
     if request.method == 'POST':
         form = MyUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            user: User = form.save(commit=False)
             user.username = user.username.lower()
+            user.is_active = False
             user.save()
-            login(request, user)
-            return redirect('home')
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('base/acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration.')
         else:
             messages.error(request, 'An error occurred during registration')
 
@@ -113,6 +140,7 @@ def userProfile(request, pk):
 
 
 @login_required(login_url='login')
+@active_required
 def createRoom(request):
     form = RoomForm()
     topics = Topic.objects.all()
@@ -133,6 +161,7 @@ def createRoom(request):
 
 
 @login_required(login_url='login')
+@active_required
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
     form = RoomForm(instance=room)
@@ -154,6 +183,7 @@ def updateRoom(request, pk):
 
 
 @login_required(login_url='login')
+@active_required
 def deleteRoom(request, pk):
     room = Room.objects.get(id=pk)
 
@@ -167,6 +197,7 @@ def deleteRoom(request, pk):
 
 
 @login_required(login_url='login')
+@active_required
 def deleteMessage(request, pk):
     message = Message.objects.get(id=pk)
 
@@ -180,6 +211,7 @@ def deleteMessage(request, pk):
 
 
 @login_required(login_url='login')
+@active_required
 def updateUser(request):
     user = request.user
     form = UserForm(instance=user)
