@@ -28,7 +28,7 @@ def activate_account(request, uidb64, token):
         login(request, user)
         return redirect('home')
     else:
-        return render(request, '<div>Invalid Activation</div>')
+        return render(request, '<div><p>Invalid Activation</p></div>')
 
 def loginPage(request):
     page = 'login'
