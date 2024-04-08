@@ -4,6 +4,8 @@
 # StudyBuddy
 </div>
 
+Live -  <a href = https://studybud-kkw5.onrender.com>https://studybud-kkw5.onrender.com</a>
+
 ### Using Docker
 --> Pull the docker image
 ```bash
